@@ -67,9 +67,9 @@ Install the essential packages for VideoRAG:
 ```bash
 # Core numerical and deep learning libraries
 pip install numpy==1.26.4
-pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2
+pip install torch==2.9.1 torchvision==0.24.1 torchaudio==2.9.1 --index-url https://download.pytorch.org/whl/cu130
 pip install accelerate==0.30.1
-pip install bitsandbytes==0.43.1
+pip install bitsandbytes==0.49.0
 
 # Video processing utilities
 pip install moviepy==1.0.3
@@ -80,12 +80,19 @@ pip install --no-deps git+https://github.com/facebookresearch/ImageBind.git@3fcf
 pip install timm ftfy regex einops fvcore eva-decord==0.6.1 iopath matplotlib types-regex cartopy
 
 # Audio processing and vector databases
-pip install ctranslate2==4.4.0 faster_whisper==1.0.3 neo4j hnswlib xxhash nano-vectordb
+# Note: CTranslate2 GPU wheels may lag behind CUDA 13.0 in some environments.
+# VideoRAG now falls back to CPU ASR automatically if GPU ASR initialization fails.
+pip install ctranslate2==4.7.1 faster_whisper==1.2.1 "neo4j>=5,<6" hnswlib xxhash nano-vectordb
 
 # Language models and utilities
-pip install transformers==4.37.1
-pip install tiktoken openai tenacity
+# Supports Qwen2.5-VL-7B-Instruct, InternVL3-8B, Qwen3-VL-8B-Instruct, and gemma-3n-E4B-it.
+pip install transformers==4.57.6
+pip install tokenizers==0.22.1 sentencepiece==0.2.0
+pip install "tiktoken>=0.9.0,<1" "openai>=1,<2" "tenacity>=8.2,<10"
 pip install ollama==0.5.3
+
+# Validate environment compatibility (recommended)
+python scripts/check_dependency_compat.py
 ```
 
 ### 📥 Model Checkpoints
