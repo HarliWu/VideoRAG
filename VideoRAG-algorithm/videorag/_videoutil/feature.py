@@ -1,7 +1,18 @@
 import os
+import sys
 import torch
 import pickle
 from tqdm import tqdm
+
+# Compatibility shim for pytorchvideo==0.1.5 on newer torchvision.
+# pytorchvideo imports torchvision.transforms.functional_tensor, which was moved
+# to torchvision.transforms._functional_tensor in torchvision>=0.17.
+try:
+    import torchvision.transforms.functional_tensor  # type: ignore  # noqa: F401
+except ModuleNotFoundError:
+    import torchvision.transforms._functional_tensor as _functional_tensor  # type: ignore
+    sys.modules["torchvision.transforms.functional_tensor"] = _functional_tensor
+
 from imagebind import data
 from imagebind.models import imagebind_model
 from imagebind.models.imagebind_model import ImageBindModel, ModalityType
