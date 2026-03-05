@@ -220,6 +220,8 @@ We constructed the LongerVideos benchmark to evaluate the model's performance in
 Here are the commands you can refer to for preparing the videos used in LongerVideos.
 
 ```shell
+# ensure yt-dlp is installed
+pip install -U yt-dlp
 cd longervideos
 python prepare_data.py # create collection folders
 sh download.sh # obtain videos
