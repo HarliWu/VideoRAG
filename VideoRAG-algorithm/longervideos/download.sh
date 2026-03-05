@@ -6,6 +6,14 @@ courses="0-fights-in-animal-kingdom 1-nature-scenes 2-climate-week-at-columbia-e
 
 for course in $courses; do
     mkdir -p ./$course/videos
-    yt-dlp -o "%(id)s.%(ext)s" -S "res:720" -a "./$course/videos.txt" -P "./$course/videos" >> ./download_log.txt 2>&1
+    # yt-dlp -o "%(id)s.%(ext)s" -S "res:720" -a "./$course/videos.txt" -P "./$course/videos" >> ./download_log.txt 2>&1
+    # Get your own cookie from a Chrone extension ("cookie.txt") after logging in YouTube and save it under "youtube_cookies.txt"
+    yt-dlp \
+        --cookies "./youtube_cookies.txt" \
+        --js-runtimes deno \
+        --remote-components ejs:github \
+        -o "%(id)s.%(ext)s" -S "res:720" \
+        -a "./$course/videos.txt" -P "./$course/videos" \
+        >> ./download_log.txt 2>&1
     wait
 done
