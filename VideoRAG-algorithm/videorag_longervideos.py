@@ -12,6 +12,7 @@ import argparse
 parser = argparse.ArgumentParser(description="Set sub-category and CUDA device.")
 parser.add_argument('--collection', type=str, default='4-rag-lecture')
 parser.add_argument('--cuda', type=str, default='0')
+parser.add_argument('--caption_model', type=str, default='./MiniCPM-V-2_6-int4')
 args = parser.parse_args()
 sub_category = args.collection
 
@@ -46,17 +47,26 @@ if __name__ == '__main__':
     multiprocessing.set_start_method('spawn')
     
     ## learn
+    print("Set up the videos...")
     video_base_path = f'./longervideos/{sub_category}/videos/'
     video_files = sorted(os.listdir(video_base_path))
     video_paths = [os.path.join(video_base_path, f) for f in video_files]
-    videorag = VideoRAG(llm=longervideos_llm_config, working_dir=f"./longervideos/videorag-workdir/{sub_category}")    
+    videorag = VideoRAG(
+        llm=longervideos_llm_config,
+        working_dir=f"./longervideos/videorag-workdir/{sub_category}",
+        caption_model_name_or_path=args.caption_model,
+    )
     videorag.insert_video(video_path_list=video_paths)
     
     ## inference
     with open(f'./longervideos/dataset.json', 'r') as f:
         longervideos = json.load(f)
     
-    videorag = VideoRAG(llm=longervideos_llm_config, working_dir=f"./longervideos/videorag-workdir/{sub_category}")        
+    videorag = VideoRAG(
+        llm=longervideos_llm_config,
+        working_dir=f"./longervideos/videorag-workdir/{sub_category}",
+        caption_model_name_or_path=args.caption_model,
+    )
     videorag.load_caption_model(debug=False)
     
     answer_folder = f'./longervideos/videorag-answers/{sub_category}'

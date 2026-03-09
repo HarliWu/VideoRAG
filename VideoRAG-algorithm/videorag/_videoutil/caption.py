@@ -14,10 +14,19 @@ def encode_video(video, frame_times):
     frames = [Image.fromarray(v.astype('uint8')).resize((1280, 720)) for v in frames]
     return frames
     
-def segment_caption(video_name, video_path, segment_index2name, transcripts, segment_times_info, caption_result, error_queue):
+def segment_caption(
+    video_name,
+    video_path,
+    segment_index2name,
+    transcripts,
+    segment_times_info,
+    caption_result,
+    error_queue,
+    caption_model_name_or_path="./MiniCPM-V-2_6-int4",
+):
     try:
-        model = AutoModel.from_pretrained('./MiniCPM-V-2_6-int4', trust_remote_code=True)
-        tokenizer = AutoTokenizer.from_pretrained('./MiniCPM-V-2_6-int4', trust_remote_code=True)
+        model = AutoModel.from_pretrained(caption_model_name_or_path, trust_remote_code=True)
+        tokenizer = AutoTokenizer.from_pretrained(caption_model_name_or_path, trust_remote_code=True)
         model.eval()
         
         with VideoFileClip(video_path) as video:

@@ -72,6 +72,7 @@ class VideoRAG:
     video_embedding_batch_num: int = 2
     segment_retrieval_top_k: int = 4
     video_embedding_dim: int = 1024
+    caption_model_name_or_path: str = "./MiniCPM-V-2_6-int4"
     
     # query
     retrieval_topk_chunks: int = 2
@@ -118,11 +119,20 @@ class VideoRAG:
     addon_params: dict = field(default_factory=dict)
     convert_response_to_json_func: callable = convert_response_to_json
 
-    def load_caption_model(self, debug=False):
+    def load_caption_model(self, debug=False, caption_model_name_or_path: Optional[str] = None):
         # caption model
+        if caption_model_name_or_path is not None:
+            self.caption_model_name_or_path = caption_model_name_or_path
+
         if not debug:
-            self.caption_model = AutoModel.from_pretrained('./MiniCPM-V-2_6-int4', trust_remote_code=True)
-            self.caption_tokenizer = AutoTokenizer.from_pretrained('./MiniCPM-V-2_6-int4', trust_remote_code=True)
+            self.caption_model = AutoModel.from_pretrained(
+                self.caption_model_name_or_path,
+                trust_remote_code=True
+            )
+            self.caption_tokenizer = AutoTokenizer.from_pretrained(
+                self.caption_model_name_or_path,
+                trust_remote_code=True
+            )
             self.caption_model.eval()
         else:
             self.caption_model = None
@@ -256,6 +266,7 @@ class VideoRAG:
                     segment_times_info,
                     captions,
                     error_queue,
+                    self.caption_model_name_or_path,
                 )
             )
             
